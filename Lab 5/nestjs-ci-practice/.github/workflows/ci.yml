@@ -1,0 +1,39 @@
+name: CI NestJS Practice
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout del codigo
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 3. Instalar dependencias
+        run: npm ci
+
+      - name: 4. Compilacion (Build)
+        run: npm run build
+
+      - name: 5. Ejecutar Linting
+        run: npm run lint
+
+      - name: 6. Ejecutar Pruebas y Cobertura
+        run: npm run test:cov
+
+      - name: 7. Subir Reporte de Cobertura (Artefacto)
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
